@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"os"
 
@@ -24,17 +23,12 @@ func main() {
 		}
 	}()
 
-	bookBytes, err :=  io.ReadAll(file)
+	var story structs.Story
+
+	err = json.NewDecoder(file).Decode(&story)
 	if err != nil {
-		log.Println("Error reading from the file: ", err)
-		os.Exit(2)
+		log.Fatal("Could not parse the json file")
 	}
 
-	var book structs.Chapter
-	err = json.Unmarshal(bookBytes, &book)
-	if err != nil {
-		log.Fatal("Could not parse the json data inside the book")
-	}
-
-	fmt.Println(book)
+	fmt.Println(story)
 }
